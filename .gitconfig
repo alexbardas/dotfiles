@@ -1,0 +1,44 @@
+[alias]
+    s = status -s
+    co = checkout
+    cp = cherry-pick
+    # Show the diff between the latest commit and the current state
+    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+    amend = commit --amend --reuse-message=HEAD
+    b = branch
+    sha = rev-parse HEAD
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%C    reset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	undo = reset --soft HEAD^
+    contributors = shortlog --summary --numbered
+
+[core]
+    excludesfile = ~/.gitignore
+    editor = vim
+
+[color]
+	ui = auto
+
+[color "branch"]
+    current = green bold
+    local = green
+    remote = yellow
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[diff]
+    # Detect copies as well as renames
+    renames = copies
+
+[merge]
+    tool = opendiff
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+[include]
+      # For username / github token / etc
+      path = ~/.gitconfig.local

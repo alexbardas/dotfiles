@@ -1,0 +1,22 @@
+#!/bin/bash
+# Change iTerm tab name with current directory
+export PROMPT_COMMAND='echo -ne "\\033]0;${PWD##*\/}\\007"'
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# History
+export HISTTIMEFORMAT='%F %T '
+export HISTCONTROL=ignoreboth   # Ignore commands that start with spaces and duplicates
+export HISTFILESIZE=1000000     # Increase the maximum number of lines contained in the history file
+export HISTSIZE=$HISTFILESIZE   # Increase the maximum number of commands recorded in the command history
+export HISTIGNORE="&:[bf]g:c:clear:history:exit:q:pwd:* --help" # Don't add certain commands to the history file
+
+shopt -s histappend
+
+export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
+export CLICOLOR=1
+
+# Use custom `less` colors for man pages
+# https://www.gnu.org/software/termutils/manual/termutils-2.0/html_chapter/tput_1.html
+export LESS_TERMCAP_md=$'\E[1;32m'   # begin bold mode
+export LESS_TERMCAP_me=$'\E[0m'      # end bold mode
+
