@@ -36,6 +36,8 @@ autocmd VimEnter * wincmd p     " Go to previous (last accessed) window
 " Close vim if the only tab opened is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
+let mapleader = "\<Space>"
+
 " Remove trailing whitespace and preserve position
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
@@ -52,6 +54,24 @@ nmap <F8> :TagbarToggle<CR>
 setlocal omnifunc=necoghc#omnifunc
 
 " Configuration -------------------------------------------------------------
+
+" Copy & paste to system clipboard with <Space>p and <Space>y {{{
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
+" }}}
+
+" Enter visual line mode with <Space><Space> {{{
+nmap <Leader><Leader> V
+" }}}
+
+" Region expanding {{{
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+" }}}
 
 " FastEscape {{{
 " Speed up transition from modes
@@ -183,6 +203,11 @@ augroup ag_config
 
     let b:ag_command = b:ag_command . ' --hidden -g ""'
     let g:ctrlp_user_command = b:ag_command
+  else
+    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+    let g:ctrlp_prompt_mappings = {
+      \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+      \ }
   endif
 augroup END
 " }}}
@@ -227,7 +252,11 @@ Plug 'bronson/vim-trailing-whitespace'
 Plug 'ryanss/vim-hackernews'
 Plug 'eagletmt/ghcmod-vim'
 Plug 'eagletmt/neco-ghc'
+Plug 'terryma/vim-expand-region'
+
 Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-fugitive'
 
 Plug 'tomasr/molokai'
 

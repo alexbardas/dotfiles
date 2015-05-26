@@ -1,7 +1,7 @@
 export PATH="/usr/local/sbin:$PATH"
 
 # Load our dotfiles like ~/.bash_prompt, etc…
-for file in ~/.{bash_prompt,exports,aliases,functions}; do
+for file in ~/.{bash_prompt,exports,aliases,bash_z,bash_preexec,functions}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
