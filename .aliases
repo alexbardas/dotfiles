@@ -7,8 +7,11 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 
-# use coreutils `ls` if possible…
+# use coreutils `ls` if possible
 command -v gls >/dev/null 2>&1 || alias gls="ls"
+
+# use coreutils `date` if possible
+command -v gdate >/dev/null 2>&1 && alias date="gdate"
 
 # Detect which `ls` flavor is in use
 if gls --color > /dev/null 2>&1; then # GNU `ls`
