@@ -206,6 +206,22 @@ if [[ -z "$__bp_delay_install" ]]; then
     __bp_preexec_and_precmd_install
 fi;
 
+
+displaytime () {
+  local T=$1
+  local D=$(bc<<<$T/60/60/24)
+  local H=$(bc<<<$T/60/60%24)
+  local M=$(bc<<<$T/60%60)
+  local S=$(bc<<<$T%60)
+  printf "\n"
+  [[ $D > 0 ]] && printf '%dd ' $D
+  [[ $H > 0 ]] && printf '%dh ' $H
+  [[ $M > 0 ]] && printf '%dm ' $M
+  [[ $D > 0 || $H > 0 || $M > 0 ]] && printf 'and '
+  printf '%.2fs' $S
+  printf "\n\n"
+}
+
 preexec () {
     date_before=$(date +%s.%N)
 }
@@ -217,6 +233,6 @@ precmd () {
 
     local date_after
     date_after=$(date +%s.%N)
-    printf "\n%.2fs\n\n" $(bc<<<$date_after-$date_before)
+    displaytime $(bc<<<$date_after-$date_before)
 }
 

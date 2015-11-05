@@ -3,36 +3,47 @@ set backupdir=~/.vim/backup
 set backup
 set directory=~/.vim/tmp
 
-syntax on                       " Color syntax
 set encoding=utf-8 nobomb       " BOM often causes trouble
-set smartindent                 " Use smart indent instead
-set noautoindent                " Turn off autoindent by default
-set tabstop=4                   " <TAB> for spaces
-set shiftwidth=4                " shift width 4 spaces (for auto indent)
-set expandtab                   " convert tabs to spaces
-set number                      " show line number
+set autoindent                  " Turn on autoindent by default
+set smartindent                 " Does the right thing (mostly) in programs
+set tabstop=2                   " Number of visual spaces per <TAB>
+set softtabstop=2               " Number of spaces in <TAB> when editing
+set shiftwidth=2                " Shift width 2 spaces (for auto indent)
+set showtabline=2               " Always show tab bar
+set expandtab                   " Convert tabs to spaces
+set number                      " Show line number
 set backspace=indent,eol,start  " Allow backspacing in insert mode
 set mouse=a
-set ruler                       " show position of cursor in status line
-"set showmatch                   " show matching brackets
+set ruler                       " Show position of cursor in status line
+"set showmatch                   " Show matching brackets
 set hls                         " Highlight search terms
-set incsearch                   " Highlight search terms dinamically, as you type
-set ignorecase                  " ignore upper/lower case when searching
-set wildmenu
+set incsearch                   " Search as characters are entered
+set ignorecase                  " Ignore upper/lower case when searching
+set wildmenu                    " Visual autocomplete for command menu
 set wildmode=list:longest       " Make completion more like bash
-set history=1000                " Keep a longer history
+set history=10000               " Keep a longer history
 set title                       " Set window title
-set scrolloff=3                 " maintain more context around the cursor
+set scrolloff=3                 " Maintain more context around the cursor
 set cursorline                  " Highlight current line
 set visualbell                  " Mute bell
 set background=dark             " Dark background
 set lazyredraw                  " Don't redraw when we don't have to
 set wrapscan                    " Searches wrap around end of file
+set foldenable                  " Enable folding
+set foldlevelstart=10           " Open most folds by default
+set foldnestmax=10              " 10 nested fold max
+set splitright                  " Open a new file in the vertical split on the right side
 filetype on                     " Filetype detection
-filetype plugin indent on       " special indentation rules for file type
+filetype plugin indent on       " Special indentation rules for file type
+syntax on                       " Color syntax
 
 autocmd VimEnter * NERDTree     " Automatically open NerdTree at startup
 autocmd VimEnter * wincmd p     " Go to previous (last accessed) window
+
+" Tab navigation
+map <S-Right> :tabn<CR>
+map <S-Left>  :tabp<CR>
+
 " Close vim if the only tab opened is NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
@@ -53,6 +64,10 @@ autocmd FileType c,cpp,java,ruby,python,haskell,javascript autocmd BufWritePre <
 nmap <F8> :TagbarToggle<CR>
 setlocal omnifunc=necoghc#omnifunc
 
+
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+let g:syntastic_javascript_checkers = ['eslint']
+
 " Configuration -------------------------------------------------------------
 
 " Copy & paste to system clipboard with <Space>p and <Space>y {{{
@@ -65,7 +80,7 @@ vmap <Leader>P "+P
 " }}}
 
 " Enter visual line mode with <Space><Space> {{{
-nmap <Leader><Leader> V
+" nmap <Leader><Leader> V
 " }}}
 
 " Region expanding {{{
@@ -76,82 +91,99 @@ vmap <C-v> <Plug>(expand_region_shrink)
 " FastEscape {{{
 " Speed up transition from modes
 if ! has('gui_running')
-  set ttimeoutlen=10
-  augroup FastEscape
-    autocmd!
-    au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=1000
-  augroup END
+    set ttimeoutlen=10
+    augroup FastEscape
+        autocmd!
+        au InsertEnter * set timeoutlen=0
+        au InsertLeave * set timeoutlen=1000
+    augroup END
 endif
 " }}}
 
 " General {{{
 augroup general_config
+    autocmd!
+
+    " Speed up viewport scrolling {{{
+    nnoremap <C-e> 3<C-e>
+    nnoremap <C-y> 3<C-y>
+    " }}}
+
+    " Faster split resizing (+,-) {{{
+    if bufwinnr(1)
+        map + <C-W>+
+        map - <C-W>-
+    endif
+    " }}}
+
+    " Better split switching (Ctrl-j, Ctrl-k, Ctrl-h, Ctrl-l) {{{
+    map <C-j> <C-W>j
+    map <C-k> <C-W>k
+    map <C-H> <C-W>h
+    map <C-L> <C-W>l
+    " }}}
+
+    " Sudo write (,W) {{{
+    noremap <leader>W :w !sudo tee %<CR>
+    " }}}
+
+    " Get output of shell commands {{{
+    command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
+    " }}}
+
+    " Remap :W to :w {{{
+    command! W w
+    " }}}
+
+    " Better mark jumping (line + col) {{{
+    nnoremap ' `
+    " }}}
+
+    " Hard to type things {{{
+    iabbrev >> →
+    iabbrev << ←
+    iabbrev ^^ ↑
+    iabbrev VV ↓
+    iabbrev aa λ
+    " }}}
+
+    " Toggle show tabs and trailing spaces (,c) {{{
+    set lcs=tab:›\ ,trail:·,eol:¬,nbsp:_
+    set fcs=fold:-
+    nnoremap <silent> <leader>c :set nolist!<CR>
+    " }}}
+    " Toggle folds (<Space>) {{{
+    nnoremap <silent> <space> :exe 'silent! normal! '.((foldclosed('.')>0)? 'zMzx' : 'zc')<CR>
+    " }}}
+
+    " Fix page up and down {{{
+    map <PageUp> <C-U>
+    map <PageDown> <C-D>
+    imap <PageUp> <C-O><C-U>
+    imap <PageDown> <C-O><C-D>
+    " }}}
+
+    " Relative numbers {{{
+    set relativenumber " Use relative line numbers. Current line is still in status bar.
+    au BufReadPost,BufNewFile * set relativenumber
+    " }}}
+augroup END
+" }}}
+
+
+
+" Filetypes -------------------------------------------------------------
+" JavaScript {{{
+augroup filetype_javascript
   autocmd!
+  let g:javascript_conceal = 1
+augroup END
+" }}}
 
-  " Speed up viewport scrolling {{{
-  nnoremap <C-e> 3<C-e>
-  nnoremap <C-y> 3<C-y>
-  " }}}
-
-  " Faster split resizing (+,-) {{{
-  if bufwinnr(1)
-    map + <C-W>+
-    map - <C-W>-
-  endif
-  " }}}
-
-  " Better split switching (Ctrl-j, Ctrl-k, Ctrl-h, Ctrl-l) {{{
-  map <C-j> <C-W>j
-  map <C-k> <C-W>k
-  map <C-H> <C-W>h
-  map <C-L> <C-W>l
-  " }}}
-
-  " Sudo write (,W) {{{
-  noremap <leader>W :w !sudo tee %<CR>
-  " }}}
-
-  " Get output of shell commands {{{
-  command! -nargs=* -complete=shellcmd R new | setlocal buftype=nofile bufhidden=hide noswapfile | r !<args>
-  " }}}
-
-  " Remap :W to :w {{{
-  command! W w
-  " }}}
-
-  " Better mark jumping (line + col) {{{
-  nnoremap ' `
-  " }}}
-
-  " Hard to type things {{{
-  iabbrev >> →
-  iabbrev << ←
-  iabbrev ^^ ↑
-  iabbrev VV ↓
-  iabbrev aa λ
-  " }}}
-
-  " Toggle show tabs and trailing spaces (,c) {{{
-  set lcs=tab:›\ ,trail:·,eol:¬,nbsp:_
-  set fcs=fold:-
-  nnoremap <silent> <leader>c :set nolist!<CR>
-  " }}}
-  " Toggle folds (<Space>) {{{
-  nnoremap <silent> <space> :exe 'silent! normal! '.((foldclosed('.')>0)? 'zMzx' : 'zc')<CR>
-  " }}}
-
-  " Fix page up and down {{{
-  map <PageUp> <C-U>
-  map <PageDown> <C-D>
-  imap <PageUp> <C-O><C-U>
-  imap <PageDown> <C-O><C-D>
-  " }}}
-
-  " Relative numbers {{{
-  set relativenumber " Use relative line numbers. Current line is still in status bar.
-  au BufReadPost,BufNewFile * set relativenumber
-  " }}}
+" JSON {{{
+augroup filetype_json
+  autocmd!
+  command PrettyJSON :%!python -m json.tool
 augroup END
 " }}}
 
@@ -160,79 +192,165 @@ augroup END
 " Airline.vim {{{
 augroup airline_config
   autocmd!
-  let g:airline_powerline_fonts = 1
   let g:airline#extensions#syntastic#enabled = 1
   let g:airline#extensions#tabline#buffer_nr_format = '%s '
   let g:airline#extensions#tabline#buffer_nr_show = 1
   let g:airline#extensions#tabline#enabled = 1
   let g:airline#extensions#tabline#fnamecollapse = 0
   let g:airline#extensions#tabline#fnamemod = ':t'
+
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+
+  " unicode symbols
+  let g:airline_left_sep = '»'
+  let g:airline_left_sep = '▶'
+  let g:airline_right_sep = '«'
+  let g:airline_right_sep = '◀'
+  let g:airline_symbols.linenr = '␊'
+  let g:airline_symbols.linenr = '␤'
+  let g:airline_symbols.linenr = '¶'
+  let g:airline_symbols.branch = '⎇'
+  let g:airline_symbols.paste = 'ρ'
+  let g:airline_symbols.paste = 'Þ'
+  let g:airline_symbols.paste = '∥'
+  let g:airline_symbols.whitespace = 'Ξ'
+
 augroup END
 " }}}
 
 " CtrlP.vim {{{
 augroup ctrlp_config
-  autocmd!
-  let g:ctrlp_clear_cache_on_exit = 0 " Do not clear filenames cache, to improve CtrlP startup
-  let g:ctrlp_lazy_update = 350 " Set delay to prevent extra search
-  let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' } " Use python fuzzy matcher for better performance
-  let g:ctrlp_match_window_bottom = 0 " Show at top of window
-  let g:ctrlp_max_files = 0 " Set no file limit, we are building a big project
-  let g:ctrlp_switch_buffer = 'Et' " Jump to tab AND buffer if already open
-  let g:ctrlp_open_new_file = 'r' " Open newly created files in the current window
-  let g:ctrlp_open_multiple_files = 'ij' " Open multiple files in hidden buffers, and jump to the first one
+    autocmd!
+    let g:ctrlp_clear_cache_on_exit = 0     " Do not clear filenames cache, to improve CtrlP startup
+    let g:ctrlp_lazy_update = 350           " Set delay to prevent extra search
+    let g:ctrlp_match_func = {
+    \ 'match': 'pymatcher#PyMatch'
+    \ }                                     " Use python fuzzy matcher for better performance
+    let g:ctrlp_match_window_bottom = 0     " Show at top of window
+    let g:ctrlp_max_files = 0               " Set no file limit, we are building a big project
+    let g:ctrlp_switch_buffer = 'Et'        " Jump to tab AND buffer if already open
+    let g:ctrlp_open_new_file = 'r'         " Open newly created files in the current window
+    let g:ctrlp_open_multiple_files = 'ij'  " Open multiple files in hidden buffers, and jump to the first one
+    let g:ctrlp_working_path_mode = 0       " Make CtrlP respect changing the working directory during a Vim session
 augroup END
 " }}}
 
 " Silver Searcher {{{
 augroup ag_config
+    autocmd!
+
+    if executable("ag")
+        " Note we extract the column as well as the file and line number
+        set grepprg=ag\ --nogroup\ --nocolor\ --column
+        set grepformat=%f:%l:%c%m
+
+        " Have the silver searcher ignore all the same things as wilgignore
+        let b:ag_command = 'ag %s -i --nocolor --nogroup'
+
+        for i in split(&wildignore, ",")
+            let i = substitute(i, '\*/\(.*\)/\*', '\1', 'g')
+            let b:ag_command = b:ag_command . ' --ignore "' . substitute(i, '\*/\(.*\)/\*', '\1', 'g') . '"'
+        endfor
+
+        let b:ag_command = b:ag_command . ' --hidden -g ""'
+        let g:ctrlp_user_command = b:ag_command
+    else
+        let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+        let g:ctrlp_prompt_mappings = {
+        \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+        \ }
+    endif
+augroup END
+" }}}
+
+" EasyMotion {{{
+augroup easymotion_config
   autocmd!
+  let g:EasyMotion_do_mapping = 0
+  let g:EasyMotion_smartcase = 1
+  nmap <Leader>s <Plug>(easymotion-s2)
+  nmap <Leader>t <Plug>(easymotion-t2)
+  nmap <Leader>w <Plug>(easymotion-w)
+  nmap <Leader>e <Plug>(easymotion-e)
+  nmap <Leader>b <Plug>(easymotion-b)
+augroup END
+" }}}
 
-  if executable("ag")
-    " Note we extract the column as well as the file and line number
-    set grepprg=ag\ --nogroup\ --nocolor\ --column
-    set grepformat=%f:%l:%c%m
-
-    " Have the silver searcher ignore all the same things as wilgignore
-    let b:ag_command = 'ag %s -i --nocolor --nogroup'
-
-    for i in split(&wildignore, ",")
-      let i = substitute(i, '\*/\(.*\)/\*', '\1', 'g')
-      let b:ag_command = b:ag_command . ' --ignore "' . substitute(i, '\*/\(.*\)/\*', '\1', 'g') . '"'
-    endfor
-
-    let b:ag_command = b:ag_command . ' --hidden -g ""'
-    let g:ctrlp_user_command = b:ag_command
-  else
-    let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
-    let g:ctrlp_prompt_mappings = {
-      \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-      \ }
-  endif
+" Ag.vim {{{
+augroup ag
+  autocmd!
+  let g:ag_working_path_mode="r"
 augroup END
 " }}}
 
 " Syntastic.vim {{{
 augroup syntastic_config
-  autocmd!
-  let g:syntastic_error_symbol = '✗'
-  let g:syntastic_warning_symbol = '⚠'
-  let g:syntastic_ruby_checkers = ['mri', 'rubocop']
+    autocmd!
+    let g:syntastic_error_symbol = '✗'
+    let g:syntastic_warning_symbol = '⚠'
+    let g:syntastic_ruby_checkers = ['mri', 'rubocop']
 augroup END
 " }}}
 
 " Molokai theme {{{
 augroup molokai_config
-  autocmd!
-
-  let g:molokai_original = 1
+    autocmd!
+    let g:molokai_original = 1
 augroup END
 " }}}
 
 " RainbowParenthesis.vim {{{
 augroup rainbow_parenthesis_config
+    autocmd!
+    nnoremap <leader>rp :RainbowParenthesesToggle<CR>
+augroup END
+" }}}
+
+" IndentLine {{{
+augroup indentLine_config
+    autocmd!
+    let g:indentLine_enabled = 1
+    let g:indentLine_leadingSpaceEnabled = 1
+    let g:indentLine_leadingSpaceChar = '.'
+augroup END
+" }}}
+
+" Nerdtree {{{
+augroup nerdtree
   autocmd!
-  nnoremap <leader>rp :RainbowParenthesesToggle<CR>
+  let g:NERDTreeWinSize = 25
+augroup END
+" }}}
+
+" Nerdtree Git Plugin {{{
+augroup nerdtree_git_plugin_config
+  autocmd!
+  let g:NERDTreeIndicatorMapCustom = {
+  \ "Modified"  : "✹",
+  \ "Staged"    : "✚",
+  \ "Untracked" : "✭",
+  \ "Renamed"   : "➜",
+  \ "Unmerged"  : "═",
+  \ "Deleted"   : "✖",
+  \ "Dirty"     : "✗",
+  \ "Clean"     : "✔︎",
+  \ "Unknown"   : "?"
+  \ }
+augroup END
+" }}}
+
+" Flow {{{
+augroup flow_config
+  autocmd!
+  let g:flow#autoclose = 1
+augroup END
+" }}}
+
+" vim-javascript {{{
+augroup vim_javascript_config
+  autocmd!
 augroup END
 " }}}
 
@@ -241,18 +359,31 @@ augroup END
 " Load plugins {{{
 call plug#begin('~/.vim/plugged')
 
+Plug 'Lokaltog/vim-easymotion'
 Plug 'bling/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'rking/ag.vim'
 Plug 'FelikZ/ctrlp-py-matcher'
+Plug 'tpope/vim-commentary'
+Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'scrooloose/syntastic'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'kien/rainbow_parentheses.vim'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ryanss/vim-hackernews'
 Plug 'eagletmt/ghcmod-vim'
 Plug 'eagletmt/neco-ghc'
+Plug 'pangloss/vim-javascript'
+Plug 'othree/yajs.vim'
 Plug 'terryma/vim-expand-region'
+Plug 'Yggdroot/indentLine'
+Plug 'alvan/vim-closetag'
+Plug 'Valloric/MatchTagAlways'
+"Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+Plug 'mxw/vim-jsx'
+"Plug 'facebook/vim-flow'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-git'
@@ -260,9 +391,10 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'tomasr/molokai'
 
+Plug 'Raimondi/delimitMate'
 "Plug 'majutsushi/tagbar'
-"Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-"Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --gocode-completer' }
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --gocode-completer' }
 
 call plug#end()
 " }}}
