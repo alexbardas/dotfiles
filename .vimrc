@@ -45,7 +45,7 @@ map <S-Right> :tabn<CR>
 map <S-Left>  :tabp<CR>
 
 " Close vim if the only tab opened is NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 let mapleader = "\<Space>"
 
