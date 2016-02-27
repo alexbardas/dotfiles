@@ -5,3 +5,6 @@ mkcd () {
     cd "$1"
 }
 
+weather_in() {
+    curl wttr.in/$1;
+}
