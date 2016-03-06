@@ -37,15 +37,10 @@ filetype on                     " Filetype detection
 filetype plugin indent on       " Special indentation rules for file type
 syntax on                       " Color syntax
 
-autocmd VimEnter * NERDTree     " Automatically open NerdTree at startup
-autocmd VimEnter * wincmd p     " Go to previous (last accessed) window
 
 " Tab navigation
 map <S-Right> :tabn<CR>
 map <S-Left>  :tabp<CR>
-
-" Close vim if the only tab opened is NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 let mapleader = "\<Space>"
 
@@ -170,7 +165,11 @@ augroup general_config
 augroup END
 " }}}
 
-
+" Disable automatic comment insertion
+augroup Format-Options
+  autocmd!
+  autocmd BufEnter * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+augroup END
 
 " Filetypes -------------------------------------------------------------
 " JavaScript {{{
@@ -320,6 +319,12 @@ augroup END
 " Nerdtree {{{
 augroup nerdtree
   autocmd!
+  " Automatically open NerdTree at startup
+  autocmd VimEnter * NERDTree
+  " Go to previous (last accessed) window
+  autocmd VimEnter * wincmd p
+  " Close vim if the only tab opened is NERDTree
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   let g:NERDTreeWinSize = 25
 augroup END
 " }}}
@@ -354,6 +359,15 @@ augroup vim_javascript_config
 augroup END
 " }}}
 
+" Investigate {{{
+augroup investigate_config
+  autocmd!
+  let g:investigate_use_dash = 1
+  nnoremap docs :call investigate#Investigate('n')<CR>
+  vnoremap docs :call investigate#Investigate('v')<CR>
+augroup END
+" }}}
+
 " Plugins -------------------------------------------------------------
 
 " Load plugins {{{
@@ -367,6 +381,7 @@ Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'tpope/vim-commentary'
 Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'blueyed/vim-diminactive'
 Plug 'scrooloose/syntastic'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -395,7 +410,7 @@ Plug 'Raimondi/delimitMate'
 "Plug 'majutsushi/tagbar'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --gocode-completer' }
-
+Plug 'keith/investigate.vim'
 call plug#end()
 " }}}
 
