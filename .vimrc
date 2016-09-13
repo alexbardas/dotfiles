@@ -225,7 +225,7 @@ augroup END
 augroup ctrlp_config
     autocmd!
     let g:ctrlp_clear_cache_on_exit = 0     " Do not clear filenames cache, to improve CtrlP startup
-    let g:ctrlp_lazy_update = 350           " Set delay to prevent extra search
+    let g:ctrlp_lazy_update = 200           " Set delay to prevent extra search
     let g:ctrlp_match_func = {
     \ 'match': 'pymatcher#PyMatch'
     \ }                                     " Use python fuzzy matcher for better performance
@@ -234,7 +234,6 @@ augroup ctrlp_config
     let g:ctrlp_switch_buffer = 'Et'        " Jump to tab AND buffer if already open
     let g:ctrlp_open_new_file = 'r'         " Open newly created files in the current window
     let g:ctrlp_open_multiple_files = 'ij'  " Open multiple files in hidden buffers, and jump to the first one
-    let g:ctrlp_working_path_mode = 0       " Make CtrlP respect changing the working directory during a Vim session
 augroup END
 " }}}
 
@@ -279,11 +278,13 @@ augroup easymotion_config
 augroup END
 " }}}
 
-" Ag.vim {{{
-augroup ag
+" Ctrlsf {{{
+augroup ctrlsf_config
   autocmd!
-  let g:ag_working_path_mode="r"
-augroup END
+  let g:ctrlsf_default_root = 'project'
+  let g:ctrlsf_position = 'top'
+  nmap <C-F>f <Plug>CtrlSFPrompt
+  vmap <C-F>f <Plug>CtrlSFVwordPath
 " }}}
 
 " Syntastic.vim {{{
@@ -373,6 +374,7 @@ Plug 'bling/vim-airline'
 Plug 'blueyed/vim-diminactive'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'dyng/ctrlsf.vim'
 Plug 'eagletmt/ghcmod-vim'
 Plug 'eagletmt/neco-ghc'
 Plug 'editorconfig/editorconfig-vim'
@@ -389,7 +391,6 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'othree/yajs.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'Raimondi/delimitMate'
-Plug 'rking/ag.vim'
 Plug 'ryanss/vim-hackernews'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'scrooloose/syntastic'

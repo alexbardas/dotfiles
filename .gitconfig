@@ -1,44 +1,44 @@
 [alias]
-    s = status -s
-    co = checkout
-    cp = cherry-pick
-    # Show the diff between the latest commit and the current state
-    d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
-    amend = commit --amend --reuse-message=HEAD
-    b = branch
-    sha = rev-parse HEAD
-	lg = log --graph --abbrev-commit --decorate --pretty=format:'%C(bold cyan)%h%C(reset) -%s %C(green)(%cr) %C(magenta)<%an>%C(reset)%C(bold yellow)%d%C(reset)'
-	undo = reset --soft HEAD^
-    contributors = shortlog --summary --numbered
+  s = status -s
+  co = checkout
+  cp = cherry-pick
+  # Show the diff between the latest commit and the current state
+  d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+  amend = commit --amend --reuse-message=HEAD
+  b = branch
+  sha = rev-parse HEAD
+  lg = log --graph --abbrev-commit --decorate --pretty=format:'%C(bold cyan)%h%C(reset) -%s %C(green)(%cr) %C(magenta)<%an>%C(reset)%C(bold yellow)%d%C(reset)'
+  undo = reset --soft HEAD^
+  contributors = shortlog --summary --numbered
 
 [core]
-    excludesfile = ~/.gitignore
-    editor = vim
+  excludesfile = ~/.gitignore
+  editor = vim
 
 [color]
-	ui = auto
+  ui = auto
 
 [color "branch"]
-    current = green bold
-    local = green
-    remote = yellow
+  current = green bold
+  local = green
+  remote = yellow
 
 [color "diff"]
-    meta = yellow bold
-    frag = magenta bold
-    old = red bold
-    new = green bold
-    whitespace = red reverse
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold strike
+  new = green bold
+  whitespace = red reverse
 
 [diff]
-    # Detect copies as well as renames
-    renames = copies
+  # Detect copies as well as renames
+  renames = copies
 
 [merge]
-    tool = opendiff
-    # Include summaries of merged commits in newly created merge commit messages
-    log = true
+  tool = opendiff
+  # Include summaries of merged commits in newly created merge commit messages
+  log = true
 
 [include]
-      # For username / github token / etc
-      path = ~/.gitconfig.local
+  # For username / github token / etc
+  path = ~/.gitconfig.local
