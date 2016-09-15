@@ -1,10 +1,10 @@
 #!/bin/bash
 
-mkcd () {
-    mkdir "$1"
-    cd "$1"
+mkcd() {
+  mkdir "$1"
+  cd "$1" || exit
 }
 
 weather_in() {
-    curl wttr.in/$1;
+  curl wttr.in/"$1" | head -38
 }

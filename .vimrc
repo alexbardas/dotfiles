@@ -1,39 +1,41 @@
 " Keep swap and backup files in /.vim directory
 set backupdir=~/.vim/backup
-set backup
 set directory=~/.vim/tmp
+set undodir=~/.vim/undo
+set backup
 
-set encoding=utf-8 nobomb       " BOM often causes trouble
-set autoindent                  " Turn on autoindent by default
-set smartindent                 " Does the right thing (mostly) in programs
-set tabstop=2                   " Number of visual spaces per <TAB>
-set softtabstop=2               " Number of spaces in <TAB> when editing
-set shiftwidth=2                " Shift width 2 spaces (for auto indent)
-set showtabline=2               " Always show tab bar
-set expandtab                   " Convert tabs to spaces
-set number                      " Show line number
-set backspace=indent,eol,start  " Allow backspacing in insert mode
-set mouse=a
-set ruler                       " Show position of cursor in status line
-"set showmatch                   " Show matching brackets
-set hls                         " Highlight search terms
-set incsearch                   " Search as characters are entered
-set ignorecase                  " Ignore upper/lower case when searching
-set wildmenu                    " Visual autocomplete for command menu
-set wildmode=list:longest       " Make completion more like bash
-set history=10000               " Keep a longer history
-set title                       " Set window title
-set scrolloff=3                 " Maintain more context around the cursor
-set cursorline                  " Highlight current line
-set visualbell                  " Mute bell
+set autoindent                  " Copy indent from last line when starting new line
 set background=dark             " Dark background
-set lazyredraw                  " Don't redraw when we don't have to
-set wrapscan                    " Searches wrap around end of file
+set backspace=indent,eol,start  " Allow backspacing in insert mode
+set cursorline                  " Highlight current line
+set encoding=utf-8 nobomb       " BOM often causes trouble
+set expandtab                   " Convert tabs to spaces
 set foldenable                  " Enable folding
 set foldlevelstart=10           " Open most folds by default
 set foldnestmax=10              " 10 nested fold max
+set history=10000               " Keep a longer history
+set hls                         " Highlight search terms
+set ignorecase                  " Ignore upper/lower case when searching
+set incsearch                   " Search as characters are entered
+set laststatus=2                " Always show status line
+set lazyredraw                  " Don't redraw when we don't have to
+set mouse=a
+set noerrorbells                " Disable error bells
+set noshowmode                  " Don't show the current mode (airline.vim takes care of us)
+set number                      " Show line number
+set ruler                       " Show position of cursor in status line
+set scrolloff=3                 " Maintain more context around the cursor
+set shiftwidth=2                " Shift width 2 spaces (for auto indent)
+set showmatch                   " Show matching brackets
+set showtabline=2               " Always show tab bar
+set softtabstop=2               " Number of spaces in <TAB> when editing
 set splitright                  " Open a new file in the vertical split on the right side
-filetype on                     " Filetype detection
+set tabstop=2                   " Number of visual spaces per <TAB>
+set title                       " Set window title
+set visualbell                  " Mute bell
+set wildmenu                    " Visual autocomplete for command menu
+set wildmode=list:longest       " Make completion more like bash
+set wrapscan                    " Searches wrap around end of file
 filetype plugin indent on       " Special indentation rules for file type
 syntax on                       " Color syntax
 
@@ -61,7 +63,7 @@ setlocal omnifunc=necoghc#omnifunc
 
 
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_checkers = ['standard']
 
 " Configuration -------------------------------------------------------------
 
@@ -307,15 +309,6 @@ augroup rainbow_parenthesis_config
 augroup END
 " }}}
 
-" IndentLine {{{
-augroup indentLine_config
-    autocmd!
-    let g:indentLine_enabled = 1
-    let g:indentLine_leadingSpaceEnabled = 1
-    let g:indentLine_leadingSpaceChar = '.'
-augroup END
-" }}}
-
 " Nerdtree {{{
 augroup nerdtree
   autocmd!
@@ -325,7 +318,7 @@ augroup nerdtree
   autocmd VimEnter * wincmd p
   " Close vim if the only tab opened is NERDTree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  let g:NERDTreeWinSize = 25
+  let g:NERDTreeWinSize = 20
 augroup END
 " }}}
 
@@ -373,44 +366,43 @@ augroup END
 " Load plugins {{{
 call plug#begin('~/.vim/plugged')
 
-Plug 'Lokaltog/vim-easymotion'
+Plug 'airblade/vim-gitgutter'
+Plug 'alvan/vim-closetag'
+Plug 'ap/vim-css-color'
 Plug 'bling/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'rking/ag.vim'
-Plug 'FelikZ/ctrlp-py-matcher'
-Plug 'tpope/vim-commentary'
-Plug 'SirVer/ultisnips'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'blueyed/vim-diminactive'
-Plug 'scrooloose/syntastic'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'kien/rainbow_parentheses.vim'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'ryanss/vim-hackernews'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'eagletmt/ghcmod-vim'
 Plug 'eagletmt/neco-ghc'
-Plug 'pangloss/vim-javascript'
-Plug 'othree/yajs.vim'
-Plug 'terryma/vim-expand-region'
-Plug 'Yggdroot/indentLine'
-Plug 'alvan/vim-closetag'
-Plug 'Valloric/MatchTagAlways'
-"Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
-Plug 'mxw/vim-jsx'
-"Plug 'facebook/vim-flow'
-
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-git'
-Plug 'tpope/vim-fugitive'
-
-Plug 'tomasr/molokai'
-
-Plug 'Raimondi/delimitMate'
-"Plug 'majutsushi/tagbar'
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --gocode-completer' }
+Plug 'editorconfig/editorconfig-vim'
+Plug 'facebook/vim-flow'
+Plug 'FelikZ/ctrlp-py-matcher'
+Plug 'junegunn/vim-emoji'
 Plug 'keith/investigate.vim'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'majutsushi/tagbar'
+Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+Plug 'mxw/vim-jsx'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'othree/yajs.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'Raimondi/delimitMate'
+Plug 'rking/ag.vim'
+Plug 'ryanss/vim-hackernews'
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'scrooloose/syntastic'
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'SirVer/ultisnips'
+Plug 'terryma/vim-expand-region'
+Plug 'tomasr/molokai'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-git'
+Plug 'Valloric/MatchTagAlways'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --gocode-completer' }
+Plug 'Xuyuanp/nerdtree-git-plugin'
 call plug#end()
 " }}}
 
