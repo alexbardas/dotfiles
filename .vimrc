@@ -3,6 +3,7 @@ set backupdir=~/.vim/backup
 set directory=~/.vim/tmp
 set undodir=~/.vim/undo
 set backup
+set shell=/bin/sh
 
 set autoindent                  " Copy indent from last line when starting new line
 set background=dark             " Dark background
@@ -314,9 +315,9 @@ augroup END
 augroup nerdtree
   autocmd!
   " Automatically open NerdTree at startup
-  autocmd VimEnter * NERDTree
+  " autocmd VimEnter * NERDTree
   " Go to previous (last accessed) window
-  autocmd VimEnter * wincmd p
+  " autocmd VimEnter * wincmd p
   " Close vim if the only tab opened is NERDTree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
   let g:NERDTreeWinSize = 20
