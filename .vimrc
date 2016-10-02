@@ -1,3 +1,6 @@
+" Drop compatibility with vi
+set nocompatible
+
 " Keep swap and backup files in /.vim directory
 set backupdir=~/.vim/backup
 set directory=~/.vim/tmp
@@ -14,6 +17,7 @@ set expandtab                   " Convert tabs to spaces
 set foldenable                  " Enable folding
 set foldlevelstart=10           " Open most folds by default
 set foldnestmax=10              " 10 nested fold max
+set hidden                      " Hide buffers instead of closing them
 set history=10000               " Keep a longer history
 set hls                         " Highlight search terms
 set ignorecase                  " Ignore upper/lower case when searching
@@ -23,6 +27,7 @@ set lazyredraw                  " Don't redraw when we don't have to
 set mouse=a
 set noerrorbells                " Disable error bells
 set noshowmode                  " Don't show the current mode (airline.vim takes care of us)
+set ofu=syntaxcomplete#Complete " Omni-completion method
 set number                      " Show line number
 set ruler                       " Show position of cursor in status line
 set scrolloff=3                 " Maintain more context around the cursor
@@ -33,19 +38,13 @@ set softtabstop=2               " Number of spaces in <TAB> when editing
 set splitright                  " Open a new file in the vertical split on the right side
 set tabstop=2                   " Number of visual spaces per <TAB>
 set title                       " Set window title
+set undolevels=10000            " Keep a longer undo history
 set visualbell                  " Mute bell
 set wildmenu                    " Visual autocomplete for command menu
 set wildmode=list:longest       " Make completion more like bash
 set wrapscan                    " Searches wrap around end of file
 filetype plugin indent on       " Special indentation rules for file type
 syntax on                       " Color syntax
-
-
-" Tab navigation
-map <S-Right> :tabn<CR>
-map <S-Left>  :tabp<CR>
-
-let mapleader = "\<Space>"
 
 " Remove trailing whitespace and preserve position
 fun! <SID>StripTrailingWhitespaces()
@@ -60,13 +59,13 @@ autocmd FileType c,cpp,java,ruby,python,haskell,javascript autocmd BufWritePre <
 "let g:jedi#popup_select_first = 0
 
 nmap <F8> :TagbarToggle<CR>
-setlocal omnifunc=necoghc#omnifunc
-
+"setlocal omnifunc=necoghc#omnifunc
 
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
 let g:syntastic_javascript_checkers = ['standard']
 
 " Configuration -------------------------------------------------------------
+let mapleader = "\<Space>"
 
 " Copy & paste to system clipboard with <Space>p and <Space>y {{{
 vmap <Leader>y "+y
@@ -77,24 +76,46 @@ vmap <Leader>p "+p
 vmap <Leader>P "+P
 " }}}
 
-" Enter visual line mode with <Space><Space> {{{
-" nmap <Leader><Leader> V
-" }}}
+" Tab navigation
+map <S-Right> :tabn<CR>
+map <S-Left>  :tabp<CR>
 
-" Region expanding {{{
+" Remap arrow keys to nothing
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+
+" Jump to the next visible line in the editor (useful for wrapped lines)
+nnoremap j gj
+nnoremap k gk
+
+" Clear highlight searches by using /
+nmap <silent> <Leader>/ :nohlsearch<CR>
+
+" Region expanding
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
-" }}}
 
 " FastEscape {{{
 " Speed up transition from modes
-if ! has('gui_running')
+if !has('gui_running')
     set ttimeoutlen=10
     augroup FastEscape
         autocmd!
         au InsertEnter * set timeoutlen=0
         au InsertLeave * set timeoutlen=1000
     augroup END
+endif
+" }}}
+
+" Change Cursor when entering Insert Mode {{{
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 " }}}
 
@@ -225,6 +246,7 @@ augroup END
 " CtrlP.vim {{{
 augroup ctrlp_config
     autocmd!
+    let g:ctrlp_cmd = 'CtrlPMixed'          " Search in Files, Buffers and MRU files at the same time
     let g:ctrlp_clear_cache_on_exit = 0     " Do not clear filenames cache, to improve CtrlP startup
     let g:ctrlp_lazy_update = 200           " Set delay to prevent extra search
     let g:ctrlp_match_func = {
@@ -235,6 +257,10 @@ augroup ctrlp_config
     let g:ctrlp_switch_buffer = 'Et'        " Jump to tab AND buffer if already open
     let g:ctrlp_open_new_file = 'r'         " Open newly created files in the current window
     let g:ctrlp_open_multiple_files = 'ij'  " Open multiple files in hidden buffers, and jump to the first one
+    let g:ctrlp_working_path_mode = 'ra'    " Set the local working directory the nearest ancestor containing .git
+
+    nmap <C-b> :CtrlPBuffer<CR>
+
 augroup END
 " }}}
 
@@ -398,6 +424,7 @@ Plug 'scrooloose/syntastic'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-expand-region'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'tomasr/molokai'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
