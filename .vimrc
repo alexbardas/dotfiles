@@ -63,7 +63,6 @@ nmap <F8> :TagbarToggle<CR>
 "setlocal omnifunc=necoghc#omnifunc
 
 let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-let g:syntastic_javascript_checkers = ['standard']
 
 " Configuration -------------------------------------------------------------
 let mapleader = "\<Space>"
@@ -208,7 +207,6 @@ augroup END
 " Airline.vim {{{
 augroup airline_config
   autocmd!
-  let g:airline#extensions#syntastic#enabled = 1
   let g:airline#extensions#tabline#buffer_nr_format = '%s '
   let g:airline#extensions#tabline#buffer_nr_show = 1
   let g:airline#extensions#tabline#enabled = 1
@@ -289,19 +287,22 @@ augroup ctrlsf_config
   vmap <C-F>f <Plug>CtrlSFVwordPath
 " }}}
 
-" Syntastic.vim {{{
-augroup syntastic_config
-    autocmd!
-    let g:syntastic_error_symbol = '✗'
-    let g:syntastic_warning_symbol = '⚠'
-    let g:syntastic_ruby_checkers = ['mri', 'rubocop']
+
+" Neomake {{{
+augroup neomake_config
+  autocmd!
+  let g:neomake_javascript_enabled_makers = ['standard']
+  let g:neomake_jsx_enabled_makers = ['standard']
+  let g:neomake_error_sign = {'text': '✗', 'texthl': 'ErrorMsg'}
+  let g:neomake_warning_sign = {'text': '⚠', 'texthl': 'WarningMsg'}
+  autocmd! BufWritePost * Neomake
 augroup END
 " }}}
 
 " Molokai theme {{{
 augroup molokai_config
-    autocmd!
-    let g:molokai_original = 1
+  autocmd!
+  let g:molokai_original = 1
 augroup END
 " }}}
 
@@ -390,12 +391,12 @@ Plug 'majutsushi/tagbar'
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 Plug 'mxw/vim-jsx'
 Plug 'nathanaelkane/vim-indent-guides'
+Plug 'neomake/neomake'
 Plug 'othree/yajs.vim'
 Plug 'pangloss/vim-javascript'
 Plug 'Raimondi/delimitMate'
 Plug 'ryanss/vim-hackernews'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'scrooloose/syntastic'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-expand-region'
