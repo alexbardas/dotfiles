@@ -8,43 +8,44 @@ set undodir=~/.vim/undo
 set backup
 set shell=/bin/sh
 
-set autoindent                  " Copy indent from last line when starting new line
-set background=dark             " Dark background
-set backspace=indent,eol,start  " Allow backspacing in insert mode
-set cursorline                  " Highlight current line
-set encoding=utf-8 nobomb       " BOM often causes trouble
-set expandtab                   " Convert tabs to spaces
-set foldenable                  " Enable folding
-set foldlevelstart=10           " Open most folds by default
-set foldnestmax=10              " 10 nested fold max
-set hidden                      " Hide buffers instead of closing them
-set history=10000               " Keep a longer history
-set hls                         " Highlight search terms
-set ignorecase                  " Ignore upper/lower case when searching
-set incsearch                   " Search as characters are entered
-set laststatus=2                " Always show status line
-set lazyredraw                  " Don't redraw when we don't have to
+set autoindent                    " Copy indent from last line when starting new line
+set background=dark               " Dark background
+set backspace=indent,eol,start    " Allow backspacing in insert mode
+set cursorline                    " Highlight current line
+set encoding=utf-8 nobomb         " BOM often causes trouble
+set expandtab                     " Convert tabs to spaces
+set foldenable                    " Enable folding
+set foldlevelstart=10             " Open most folds by default
+set foldnestmax=10                " 10 nested fold max
+set hidden                        " Hide buffers instead of closing them
+set history=10000                 " Keep a longer history
+set hls                           " Highlight search terms
+set ignorecase                    " Ignore upper/lower case when searching
+set incsearch                     " Search as characters are entered
+set laststatus=2                  " Always show status line
+set lazyredraw                    " Don't redraw when we don't have to
 set mouse=a
-set noerrorbells                " Disable error bells
-set noshowmode                  " Don't show the current mode (airline.vim takes care of us)
-set ofu=syntaxcomplete#Complete " Omni-completion method
-set number                      " Show line number
-set ruler                       " Show position of cursor in status line
-set scrolloff=3                 " Maintain more context around the cursor
-set shiftwidth=2                " Shift width 2 spaces (for auto indent)
-set showmatch                   " Show matching brackets
-set showtabline=2               " Always show tab bar
-set softtabstop=2               " Number of spaces in <TAB> when editing
-set splitright                  " Open a new file in the vertical split on the right side
-set tabstop=2                   " Number of visual spaces per <TAB>
-set title                       " Set window title
-set undolevels=10000            " Keep a longer undo history
-set visualbell                  " Mute bell
-set wildmenu                    " Visual autocomplete for command menu
-set wildmode=list:longest       " Make completion more like bash
-set wrapscan                    " Searches wrap around end of file
-filetype plugin indent on       " Special indentation rules for file type
-syntax on                       " Color syntax
+set noerrorbells                  " Disable error bells
+set noshowmode                    " Don't show the current mode (airline.vim takes care of us)
+set ofu=syntaxcomplete#Complete   " Omni-completion method
+set number                        " Show line number
+set ruler                         " Show position of cursor in status line
+set scrolloff=3                   " Maintain more context around the cursor
+set shiftwidth=2                  " Shift width 2 spaces (for auto indent)
+set showmatch                     " Show matching brackets
+set showtabline=2                 " Always show tab bar
+set softtabstop=2                 " Number of spaces in <TAB> when editing
+set splitright                    " Open a new file in the vertical split on the right side
+set tabstop=2                     " Number of visual spaces per <TAB>
+set title                         " Set window title
+set undolevels=10000              " Keep a longer undo history
+set visualbell                    " Mute bell
+set wildignore+=*/.git/*,*/tmp/*
+set wildmenu                      " Visual autocomplete for command menu
+set wildmode=list:longest         " Make completion more like bash
+set wrapscan                      " Searches wrap around end of file
+filetype plugin indent on         " Special indentation rules for file type
+syntax on                         " Color syntax
 
 " Remove trailing whitespace and preserve position
 fun! <SID>StripTrailingWhitespaces()
@@ -158,15 +159,7 @@ augroup general_config
     nnoremap ' `
     " }}}
 
-    " Hard to type things {{{
-    iabbrev >> →
-    iabbrev << ←
-    iabbrev ^^ ↑
-    iabbrev VV ↓
-    iabbrev aa λ
-    " }}}
-
-    " Toggle show tabs and trailing spaces (,c) {{{
+    " Toggle show tabs and trailing spaces (<Leader>c) {{{
     set lcs=tab:›\ ,trail:·,eol:¬,nbsp:_
     set fcs=fold:-
     nnoremap <silent> <leader>c :set nolist!<CR>
@@ -245,50 +238,32 @@ augroup END
 
 " CtrlP.vim {{{
 augroup ctrlp_config
-    autocmd!
-    let g:ctrlp_cmd = 'CtrlPMixed'          " Search in Files, Buffers and MRU files at the same time
-    let g:ctrlp_clear_cache_on_exit = 0     " Do not clear filenames cache, to improve CtrlP startup
-    let g:ctrlp_lazy_update = 200           " Set delay to prevent extra search
-    let g:ctrlp_match_func = {
-    \ 'match': 'pymatcher#PyMatch'
-    \ }                                     " Use python fuzzy matcher for better performance
-    let g:ctrlp_match_window_bottom = 0     " Show at top of window
-    let g:ctrlp_max_files = 0               " Set no file limit, we are building a big project
-    let g:ctrlp_switch_buffer = 'Et'        " Jump to tab AND buffer if already open
-    let g:ctrlp_open_new_file = 'r'         " Open newly created files in the current window
-    let g:ctrlp_open_multiple_files = 'ij'  " Open multiple files in hidden buffers, and jump to the first one
-    let g:ctrlp_working_path_mode = 'ra'    " Set the local working directory the nearest ancestor containing .git
+  autocmd!
+  let g:ctrlp_cmd = 'CtrlPMixed'          " Search in Files, Buffers and MRU files at the same time
+  let g:ctrlp_lazy_update = 200           " Set delay to prevent extra search
+  let g:ctrlp_match_func = {
+  \ 'match': 'pymatcher#PyMatch'
+  \ }                                     " Use python fuzzy matcher for better performance
+  let g:ctrlp_match_window_bottom = 0     " Show at top of window
+  let g:ctrlp_max_files = 0               " Set no file limit, we are building a big project
+  let g:ctrlp_switch_buffer = 'Et'        " Jump to tab AND buffer if already open
+  let g:ctrlp_open_new_file = 'r'         " Open newly created files in the current window
+  let g:ctrlp_open_multiple_files = 'ij'  " Open multiple files in hidden buffers, and jump to the first one
+  let g:ctrlp_working_path_mode = 'ra'    " Set the local working directory the nearest ancestor containing .git
 
-    nmap <C-b> :CtrlPBuffer<CR>
-
+  nmap <C-b> :CtrlPBuffer<CR>
 augroup END
 " }}}
 
-" Silver Searcher {{{
-augroup ag_config
-    autocmd!
-
-    if executable("ag")
-        " Note we extract the column as well as the file and line number
-        set grepprg=ag\ --nogroup\ --nocolor\ --column
-        set grepformat=%f:%l:%c%m
-
-        " Have the silver searcher ignore all the same things as wilgignore
-        let b:ag_command = 'ag %s -i --nocolor --nogroup'
-
-        for i in split(&wildignore, ",")
-            let i = substitute(i, '\*/\(.*\)/\*', '\1', 'g')
-            let b:ag_command = b:ag_command . ' --ignore "' . substitute(i, '\*/\(.*\)/\*', '\1', 'g') . '"'
-        endfor
-
-        let b:ag_command = b:ag_command . ' --hidden -g ""'
-        let g:ctrlp_user_command = b:ag_command
-    else
-        let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
-        let g:ctrlp_prompt_mappings = {
-        \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-        \ }
-    endif
+" Ripgrep {{{
+augroup rg_config
+  autocmd!
+  if executable("rg")
+    let g:ctrlp_user_command = 'rg --files %s'
+    set grepprg=rg\ --color=never
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    let g:ctrlp_use_caching = 0
+  endif
 augroup END
 " }}}
 
@@ -346,7 +321,7 @@ augroup nerdtree
   " autocmd VimEnter * wincmd p
   " Close vim if the only tab opened is NERDTree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-  let g:NERDTreeWinSize = 20
+  let g:NERDTreeWinSize = 24
 augroup END
 " }}}
 
