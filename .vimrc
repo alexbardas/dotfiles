@@ -178,6 +178,9 @@ augroup general_config
     set relativenumber " Use relative line numbers. Current line is still in status bar.
     au BufReadPost,BufNewFile * set relativenumber
     " }}}
+
+    " bind K to grep word under cursor
+    nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 augroup END
 " }}}
 
@@ -257,9 +260,9 @@ augroup END
 augroup rg_config
   autocmd!
   if executable("rg")
-    let g:ctrlp_user_command = 'rg --files %s'
-    set grepprg=rg\ --color=never
-    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+    set grepprg=rg\ --vimgrep\ --no-heading
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+    let g:ctrlp_user_command = 'rg -uu %s --files --color=never --glob ""'
     let g:ctrlp_use_caching = 0
   endif
 augroup END
