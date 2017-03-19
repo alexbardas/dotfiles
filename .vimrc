@@ -38,7 +38,9 @@ set softtabstop=2                 " Number of spaces in <TAB> when editing
 set splitright                    " Open a new file in the vertical split on the right side
 set tabstop=2                     " Number of visual spaces per <TAB>
 set title                         " Set window title
+set undofile                      " Save undo's after file closes
 set undolevels=10000              " Keep a longer undo history
+set undoreload=10000              " Maximum number of lines to save for undo
 set visualbell                    " Mute bell
 set wildignore+=*/.git/*,*/tmp/*
 set wildmenu                      " Visual autocomplete for command menu
@@ -189,6 +191,15 @@ augroup Format-Options
   autocmd!
   autocmd BufEnter * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 augroup END
+
+" Create undo folder {{{
+augroup undo_config
+  autocmd!
+  if !isdirectory($HOME."/.vim/undo")
+    call mkdir($HOME."/.vim/undo", "", 0700)
+  endif
+augroup END
+" }}}
 
 " Filetypes -------------------------------------------------------------
 " JavaScript {{{
@@ -368,6 +379,13 @@ augroup investigate_config
 augroup END
 " }}}
 
+" UndoTree {{{
+augroup undotree_config
+  autocmd!
+  nnoremap <leader>u :UndotreeToggle<CR>
+augroup END
+" }}}
+
 " Plugins -------------------------------------------------------------
 
 " Load plugins {{{
@@ -392,6 +410,7 @@ Plug 'kien/rainbow_parentheses.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'majutsushi/tagbar'
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+Plug 'mbbill/undotree'
 Plug 'mxw/vim-jsx'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'neomake/neomake'
