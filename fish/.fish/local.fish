@@ -3,7 +3,7 @@ set -gx EDITOR vim
 
 set -gx LS_COLORS (gdircolors -c ~/.dircolors | string replace -r 'setenv LS_COLORS \'(.*)\'' '$1')
 
-set -x FZF_DEFAULT_COMMAND 'ag -g ""'
+set -x FZF_DEFAULT_COMMAND 'rg -g ""'
 set -x FZF_DEFAULT_OPTS '--ansi --inline-info'
 
 alias g 'git'
