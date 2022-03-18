@@ -46,6 +46,7 @@ set wildignore+=*/.git/*,*/tmp/*
 set wildmenu                      " Visual autocomplete for command menu
 set wildmode=list:longest         " Make completion more like bash
 set wrapscan                      " Searches wrap around end of file
+set nofixendofline                " Do not automatically add newline at the end of the file
 filetype plugin indent on         " Special indentation rules for file type
 syntax on                         " Color syntax
 
